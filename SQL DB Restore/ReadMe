@@ -1,0 +1,72 @@
+# Restore-SQL-Database-From-Azure-Recovery-Services-Vault PowerShell Script
+
+This README file provides detailed information about the Restore-SQL-Database-From-Azure-Recovery-Services-Vault PowerShell script.
+
+## Synopsis
+
+This PowerShell script is designed to restore a backup of a SQL database from an Azure Recovery Services Vault. The script uses a Managed Service Identity (either system-assigned or user-assigned) to connect to Azure and retrieve necessary information for the restore operation.
+
+## Description
+
+This PowerShell script retrieves information about the Recovery Services Vault and the backup items stored in it. It fetches the recovery points for a specific backup item within a defined time period and selects the latest 'full' recovery point. The script also obtains the configuration details of the backup, such as the container, server name, and instance of the database.
+
+The script can optionally alter the database restoration configurations such as overwriting an existing workload or changing the restored database name. It then updates the target path of various database elements before initiating the restoration of the database with the updated configurations.
+
+Please note that the actual restore function is commented out in the final line of the script.
+
+## Parameters
+
+- `sqlInstance`: The SQL instance for the operation. Example: "sqlinstance;mssqlserver"
+
+- `targetServerName`: The target server for the operation. Example: "lcg-dbdev07"
+
+- `backupServerName`: The backup server name for the operation. Example: "lcg-dbprd07"
+
+- `sqldbname`: The name of the SQL database for the operation. Example: "SQLDataBase;mssqlserver;marsods"
+
+- `VaultName`: The name of the Recovery Services Vault. Example: "lcgncubackup01p-asr"
+
+- `ContainerName`: The container name in the Recovery Services Vault. Example: "VMAppContainer;compute;lcgncubi-rg;lcg-dbprd07"
+
+- `overwriteWLIFPresent`: Option to overwrite existing workload if present. This parameter is a boolean value. Example: 'yes'
+
+- `restoredbname`: The name for the restored database. Example: "MARSODS-Daily"
+
+- `mssqlname`: The name of the MSSQL database. Example: "MARSODS"
+
+## Usage
+
+To use this script, you will need to supply the necessary parameters listed above. You can adjust the parameters according to your specific scenario.
+
+The actual restore function is commented out at the end of the script. If you want the script to perform the restore operation, you will need to uncomment this line.
+
+Here is an example of how to use the script:
+
+```powershell
+.\Restore-SQL-Database-From-Azure-Recovery-Services-Vault.ps1 -sqlInstance "sqlinstance;mssqlserver" -targetServerName "lcg-dbdev07" -backupServerName "lcg-dbprd07" -sqldbname "SQLDataBase;mssqlserver;marsods" -VaultName "lcgncubackup01p-asr" -ContainerName "VMAppContainer;compute;lcgncubi-rg;lcg-dbprd07" -overwriteWLIFPresent 'yes' -restoredbname "MARSODS-Daily" -mssqlname "MARSODS"
+```
+Alternatively, just load it into an automation account.
+
+## Dependencies
+
+This script uses the Az module for Azure operations. If the Az module is not installed on your machine, you can install it using the following command in the PowerShell command prompt:
+
+```powershell
+Install-Module -Name Az -AllowClobber
+```
+
+## Author
+
+This script was authored by Gordon McWilliams.
+
+## Version
+
+This is version 1.0 of the script. Future updates and improvements may follow.
+
+## Troubleshooting
+
+If an error occurs during the script execution, the error message will be displayed in the PowerShell console. Review the error message to identify the issue. Ensure that all parameters are correct and all dependencies are installed and configured correctly.
+
+## Support
+
+This script is provided "as is", without any warranty or support. Use it at your own risk. For any suggestions, improvements, or issues, please contact the script author.

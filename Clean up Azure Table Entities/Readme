@@ -1,0 +1,30 @@
+# Azure Storage Table Clean Up Script
+
+## Author Information
+- **Author**: Gordon McWilliams
+
+## Synopsis
+This script retrieves and deletes Azure storage table rows based on a timestamp condition. It is designed to run in an azure automation account.
+
+## Description
+The script first authenticates to Azure using the provided subscription ID, then retrieves the storage account key for the specified storage account. It then establishes a context with the storage account, retrieves all tables within the storage account, and iterates over each table to retrieve all entities (rows) within each table. If the timestamp of an entity is older than the current date (threshold date), the script attempts to remove the entity from the table.
+
+## Parameters
+
+- **resourceGroupName**: The resource group where the storage account is located.
+- **storageAccountName**: The storage account name from where the tables will be retrieved and potentially modified.
+
+## Usage
+
+1. Create a runbook in the azure automation account and paste the script in it.
+2. Run the automation runbook using the desired parameters.
+3. Link the runbook to an automation schedule
+
+
+Replace "Your_Resource_Group_Name" and "Your_Storage_Account_Name" with your actual Azure details.
+
+Ensure that the automation account managed identity has necessary permissions to run the script and make changes in the Azure account.
+
+## Notes
+
+Please make sure to update the script with the appropriate details before running it. It is advisable to test the script in a non-production environment before running it on production data.

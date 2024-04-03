@@ -1,0 +1,44 @@
+# Azure Automation Guide: Deleting Blobs Older than a Specific Number of Days
+
+This guide will assist you in using the PowerShell script which deletes blobs in a specified Azure Storage Account that are older than a specified number of days, utilizing either a system-assigned or user-assigned managed identity.
+
+## Prerequisites
+
+- Azure Subscription
+- Azure Automation Account
+- Existing Azure Storage Account
+- Access to Azure Key Vault containing the Storage Account key
+
+## Modules Needed
+
+This script requires the following PowerShell Az modules:
+
+- Az.Accounts
+- Az.Resources
+- Az.Automation
+- Az.KeyVault
+- Az.Storage
+
+Ensure these modules are imported to your Automation Account. If not, import them before running the script.
+
+## Using the Script
+
+1. **Create a Runbook**: In your Azure Automation Account, create a new Runbook, select the type as PowerShell, and paste the script.
+
+2. **Provide parameters**: After pasting the script, review the parameters section and provide the necessary details:
+    - `resourceGroupName`: Name of the resource group where the storage account and Key Vault are located.
+    - `storageAccountName`: Name of the Azure Storage Account from which blobs are to be deleted.
+    - `keyVault`: Name of the Azure Key Vault where the storage account key is stored.
+    - `secretName`: Name of the secret in the Key Vault that stores the storage account key.
+    - `thresholdDays`: (Optional) Number of days past which blobs should be deleted. Blobs that were last modified before this many days ago are deleted. If not provided, the script will not delete any blobs.
+    - `targetContainers`: (Optional) List of specific containers from which to delete blobs. If not provided, all containers in the storage account are considered.
+
+3. **Managed Identity**: The script is set to use a System Assigned Managed Identity by default. If you want to use a User Assigned Managed Identity, change `$method = "SA"` to `$method = "UA"` and provide the details of the user-assigned managed identity in the script.
+
+4. **Run the Runbook**: Once all parameters have been populated correctly, publish the runbook and then start it. You can monitor the progress of the runbook from the output section in the Azure portal.
+
+Please note that this script has the potential to delete data permanently, ensure that all parameters are set correctly and the `thresholdDays` parameter is set to an appropriate value. If you are unsure, it may be wise to run the script in a non-production environment first to confirm it is operating as expected.
+
+## Errors and Debugging
+
+In case of errors or issues, review the output logs in the Azure portal. The script includes error handling and will provide useful information in case of a failure.

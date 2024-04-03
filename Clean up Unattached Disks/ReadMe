@@ -1,0 +1,32 @@
+**Azure Disk Discovery Automation Script**
+
+**Overview**
+
+The TagUnattachedDisks.ps1 PowerShell script automates the process of identifying and tagging unattached Azure disks that do not have "Replica" in their names and do not have a "ToDelete" tag set to "No". The identified disks are then tagged with "ToDelete:Yes".
+
+This script is particularly useful for maintaining cleanliness and organization in your Azure environment. By tagging unattached and unneeded disks, you can easily identify them for review or deletion.
+
+**Prerequisites**
+
+To use this script, you will need:
+
+Azure PowerShell Modules: The script uses the Az.Accounts and Az.Compute modules. Ensure they are installed on the machine where the script will run.
+Azure Subscription: The script operates on Azure disks. You need to have an active Azure subscription with the necessary permissions to view and modify disks.
+Azure Automation Account (optional): If you wish to run this script in an Azure Automation runbook, you need an Automation account.
+Usage
+
+Locally: Open a PowerShell terminal and navigate to the directory where the TagUnattachedDisks.ps1 script is located. Run the script using the command: .\TagUnattachedDisks.ps1.
+Azure Automation Runbook:
+Create a new runbook in your Azure Automation account.
+Copy and paste the script into the runbook.
+Remember to replace Connect-AzAccount with the appropriate code to use the managed identity. Typically, you use the Enable-AzAutomationAccount command to enable managed identity for the Automation account, and Connect-AzAccount -Identity to connect using the managed identity.
+Save and publish the runbook.
+Start the runbook.
+
+**Note on Managed Identities**
+
+Managed identities provide an Azure Active Directory identity to Azure resources, allowing those resources to authenticate to services that support Azure AD authentication. In this case, the managed identity is used to authenticate the Automation runbook to the Azure subscription.
+
+To use a managed identity in an Azure Automation runbook, the Automation account must be configured with a managed identity, and the managed identity must have the necessary permissions to perform operations on Azure disks.
+
+The Connect-AzAccount -Identity command is used in the script to authenticate using the managed identity. If your environment requires different commands or parameters, adjust this command accordingly.

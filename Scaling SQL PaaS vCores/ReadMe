@@ -1,0 +1,41 @@
+# Azure Automation Guide: Updating vCores of an Azure SQL Database
+
+This guide will help you use the provided PowerShell script which updates the vCores of a specified Azure SQL database. This script leverages either a system-assigned or user-assigned managed identity.
+
+## Prerequisites
+
+- Azure Subscription
+- Azure Automation Account
+- Existing Azure SQL Database
+- Managed identity (either system-assigned or user-assigned) with permissions to manage the Azure SQL Database
+
+## Modules Needed
+
+This script requires the following PowerShell Az modules:
+
+- Az.Accounts
+- Az.Resources
+- Az.Automation
+- Az.Sql
+
+Ensure these modules are imported to your Automation Account. If they are not, you'll need to import them before running the script.
+
+## Using the Script
+
+1. **Create a Runbook**: In your Azure Automation Account, create a new Runbook. Select the type as PowerShell and paste the script.
+
+2. **Provide parameters**: After pasting the script, review the parameters section and provide the necessary details:
+    - `resourceGroupName`: The name of the resource group in Azure where the SQL server and database are located.
+    - `serverName`: The name of the SQL server in Azure where the database resides.
+    - `databaseName`: The name of the Azure SQL database whose vCores are to be updated.
+    - `vCores`: The new number of vCores to set for the database.
+
+3. **Managed Identity**: The script is set to use a System Assigned Managed Identity by default. If you want to use a User Assigned Managed Identity, change `$method = "SA"` to `$method = "UA"` and provide the details of the user-assigned managed identity in the script.
+
+4. **Run the Runbook**: Once all parameters have been populated correctly, publish the runbook and then start it. You can monitor the progress of the runbook from the output section in the Azure portal.
+
+Ensure that the managed identity (either system-assigned or user-assigned) has the necessary permissions to update the vCores of the specified Azure SQL Database.
+
+## Errors and Debugging
+
+In case of errors or issues, review the output logs in the Azure portal. The script includes error handling and will provide useful information in case of a failure. The `Handle-Error` function within the script logs any errors encountered during the execution of the script and aborts the operation.

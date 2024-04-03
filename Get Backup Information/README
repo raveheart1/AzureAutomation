@@ -1,0 +1,28 @@
+
+# SQL Backup Info Script
+
+## Introduction
+This PowerShell script retrieves and processes backup information related to Virtual Machines (VMs) and SQL servers across multiple Azure subscriptions. It focuses on multiple Azure subscription IDs specified within the script. For each subscription, it sets the context, retrieves all Recovery Services Vaults associated with the subscription, and processes related backup data.
+
+## Requirements
+- PowerShell with the Az module installed for Azure operations.
+- Azure subscription IDs and paths to two CSV files (`VM_Backups.csv` and `SQL_Backups.csv`) need to be defined within the script.
+
+## Usage
+1. Open the script in a PowerShell editor or IDE.
+2. Ensure the Azure subscription IDs are correctly specified within the `$subscriptionIds` array.
+3. Ensure the paths to the CSV files (`VM_Backups.csv` and `SQL_Backups.csv`) are correctly defined.
+4. Run the script in a PowerShell session with the necessary permissions.
+
+## Enhancements
+The script has been enhanced to include:
+- Progress updates using the `Write-Progress` cmdlet to provide feedback on the script's execution.
+- Error handling using `try-catch` blocks to gracefully manage potential issues and provide meaningful error messages.
+
+## Author
+Gordon McWilliams
+
+## Version
+1.0 
+
+---
