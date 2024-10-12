@@ -107,22 +107,17 @@ else {
 # grab SA secret 
 $storageAccountKey = Get-AzKeyVaultSecret -VaultName $keyVault -Name $secretName -AsPlainText
 
-# Set the time threshold for deletion
 $thresholdDate = (Get-Date).AddDays(-$thresholdDays)
 try {
-    # Get the storage account context
     "Getting storage account context..."
     $storageAccountContext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey
 
-    # List all containers in the storage account
     "Listing containers in the storage account..."
     $containers = Get-AzStorageContainer -Context $storageAccountContext
 
-    # Iterate through each container
     foreach ($container in $containers) {
         $containerName = $container.Name
 
-        # Skip this container if it's not in the target list (if provided)
     if ($targetContainers.Count -gt 0 -and $targetContainers -notcontains $containerName) {
         continue
     }

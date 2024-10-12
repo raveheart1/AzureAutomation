@@ -31,7 +31,7 @@ Gordon McWilliams
 1.0
 #>
 
-# Specify the subscription IDs
+# Specify the subscription IDs - do this in a keyvault if you want
 $subscriptionIds = @(
     'subid1',
     'subid2'
@@ -39,17 +39,14 @@ $subscriptionIds = @(
 )
 
 
-# Specify the paths to the CSV files
 $vmCsvPath = "VM_Backups.csv"
 $sqlCsvPath = "SQL_Backups.csv"
 $azureFilesCsvPath = "AzureFiles_Backups.csv"
 
-# Create arrays to store the output objects
 $vmOutputArray = @()
 $sqlOutputArray = @()
 $azureFilesOutputArray = @()
 
-# Iterate through each subscription ID
 Write-Progress -PercentComplete 0 -Status "Starting processing subscriptions" -Activity "Initialization"
 $subscriptionCount = $subscriptionIds.Length
 $currentSubscriptionIndex = 0
@@ -57,27 +54,21 @@ foreach ($subscriptionId in $subscriptionIds) {
     $currentSubscriptionIndex++
     $percentComplete = ($currentSubscriptionIndex / $subscriptionCount) * 100
     Write-Progress -PercentComplete $percentComplete -Status "Processing subscription $subscriptionId" -Activity "Processing Subscriptions"
-    # Set the context to the current subscription
     Set-AzContext -SubscriptionId $subscriptionId
 
     Write-Host "Processing subscription: $subscriptionId"
 
-    # Get all Recovery Services Vaults
     $vaults = Get-AzRecoveryServicesVault
 
     Write-Host "Found $($vaults.Count) vaults."
 
-    # Iterate through each vault
     foreach ($vault in $vaults) {
-        # Set the Recovery Services vault context
         Set-AzRecoveryServicesVaultContext -Vault $vault
         
         Write-Host "Processing vault: $($vault.Name)"
 
-        # Get the list of backup policies
         $backupPolicies = Get-AzRecoveryServicesBackupProtectionPolicy
 
-        # Process Azure VM backup policies
         $vmBackupPolicies = $backupPolicies | Where-Object { $_.WorkloadType -eq 'AzureVM' }
         foreach ($policy in $vmBackupPolicies) {
             $protectedItems = Get-AzRecoveryServicesBackupItem -WorkloadType AzureVM -BackupManagementType AzureVM
@@ -97,7 +88,6 @@ foreach ($subscriptionId in $subscriptionIds) {
             }
         }
 
-        # Process SQL backup policies
         $sqlBackupPolicies = $backupPolicies | Where-Object { $_.WorkloadType -eq 'MSSQL' }
         foreach ($policy in $sqlBackupPolicies) {
             $protectedItems = Get-AzRecoveryServicesBackupItem -BackupManagementType AzureWorkload -WorkloadType MSSQL
@@ -123,7 +113,6 @@ foreach ($subscriptionId in $subscriptionIds) {
             }
         }
 
-        # Process Azure Files backup policies
         $azureFilesBackupPolicies = $backupPolicies | Where-Object { $_.WorkloadType -eq 'AzureFiles' }
         foreach ($policy in $azureFilesBackupPolicies) {
             $protectedItems = Get-AzRecoveryServicesBackupItem -BackupManagementType AzureStorage -WorkloadType AzureFiles
@@ -144,14 +133,11 @@ foreach ($subscriptionId in $subscriptionIds) {
         }
     }
 
-    # Notify the user that the script has completed
     Write-Host "Script completed"
 
-    # After all loops have completed, output the arrays to CSV files
     $vmOutputArray | Export-Csv -Path $vmCsvPath -NoTypeInformation
     $sqlOutputArray | Export-Csv -Path $sqlCsvPath -NoTypeInformation
     $azureFilesOutputArray | Export-Csv -Path $azureFilesCsvPath -NoTypeInformation
 
-    # Notify the user that the data has been exported
     Write-Host "Data exported to $vmCsvPath, $sqlCsvPath, and $azureFilesCsvPath"
 }

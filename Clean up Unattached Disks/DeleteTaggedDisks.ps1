@@ -61,10 +61,8 @@ else {
     exit
  }
 
-# Get the current date
 $currentDate = Get-Date
 
-# Get all disks in the subscription
 try {
     Write-Progress -Activity "Retrieving disks from the subscription..."
     $disks = Get-AzDisk
@@ -80,10 +78,8 @@ foreach ($disk in $disks) {
     $processedCount++
     "Processing disk $processedCount of $diskCount: $($disk.Name)"
     
-    # Check if the disk is tagged with "ToDelete:Yes" and if it is older than 30 days
     if ($disk.Tags["ToDelete"] -eq "Yes" -and ($currentDate - $disk.TimeCreated).Days -gt 30) {
         
-        # Delete the disk
         try {
             Remove-AzDisk -ResourceGroupName $disk.ResourceGroupName -DiskName $disk.Name -Force
              "Deleted disk $($disk.Name)"
